@@ -1,4 +1,4 @@
-# Laboratorium 05: funkcje, `do...while` i rekurencja
+# Laboratorium 06: funkcje, `do...while` i rekurencja
 
 Na tym laboratorium rozwijamy materiał dotyczący funkcji oraz poznajemy rekurencję.
 
