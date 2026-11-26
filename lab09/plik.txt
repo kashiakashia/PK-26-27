@@ -1,0 +1,9 @@
+To jest test.
+Przykładowy plik :)
+
+Możesz uzupełnić swoim tekstem.
+Sprawdź, czy program działa.
+
+Może warto policzyć wyrazy? A może litery?
+
+To dobre zadanie na test.
