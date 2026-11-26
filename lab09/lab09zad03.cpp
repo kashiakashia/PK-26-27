@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     // przykład: 'szukacz.exe' - > argc = 1
     // przykład: 'szukacz.exe plik.txt' -> argc == 2
 
-    if (argc != 2) {
+    if (argc < 3) {
         cerr << "Użycie: " << argv[0] << " <sciezka_do_pliku>\n";
         // cerr -> strumień do wypisywania błędów (bonus) 
         // *Jest niebuforowany, co oznacza, że dane są natychmiast wypisywane na ekran, 
