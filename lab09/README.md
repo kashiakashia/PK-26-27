@@ -1364,3 +1364,99 @@ linia.find(wzorzec)
 ```
 
 pozwala sprawdzić, czy linia zawiera podany tekst.
+
+# Największy palindrom mieszczący się w typie
+
+## Cel zadania
+
+Dla każdego z podanych typów całkowitoliczbowych program ma wypisać:
+
+- rozmiar typu w bajtach,
+- największą liczbę, która mieści się w tym typie i jest palindromem.
+
+Badane typy to: `signed short int`, `unsigned short int`, `signed int`, `unsigned int`, `signed long int`, `unsigned long int`, `signed long long int` i `unsigned long long int`.
+
+Dla typów ze znakiem szukamy największej wartości dodatniej. Jej granicę pobieramy przez `numeric_limits<T>::max()`.
+
+## Pomysł na rozwiązanie
+
+Nie sprawdzamy po kolei każdej liczby od maksimum w dół. Dla typów 64-bitowych taka pętla mogłaby wykonywać się bardzo długo. Zamiast tego tworzymy największego możliwego palindroma na podstawie cyfr maksimum.
+
+W kodzie cyfry są przechowywane w zwykłych tablicach. Nie używamy szablonów funkcji.
+
+## Krok 1. Pobranie maksimum typu
+
+Funkcja `sprawdzTyp` otrzymuje maksimum jako `unsigned long long`. Maksimum każdego z badanych typów mieści się w tym typie, a dla typów ze znakiem przekazujemy ich największą dodatnią wartość.
+
+Przykładowo:
+
+```cpp
+numeric_limits<signed int>::max()
+```
+
+zwraca największą wartość typu `signed int`.
+
+## Krok 2. Zapisanie cyfr maksimum w tablicy
+
+W pętli pobieramy ostatnią cyfrę przez resztę z dzielenia przez 10:
+
+```cpp
+cyfry[len++] = temp % 10;
+temp /= 10;
+```
+
+Cyfry trafiają do tablicy od końca. Dla liczby `1385` początkowo tablica zawiera:
+
+```text
+5, 8, 3, 1
+```
+
+Następna pętla zamienia kolejność cyfr, aby odpowiadała zapisowi liczby:
+
+```text
+1, 3, 8, 5
+```
+
+## Krok 3. Utworzenie kandydata
+
+Kopiujemy cyfry maksimum do tablicy `kandydat`. Następnie odbijamy pierwszą połowę na drugą:
+
+```cpp
+for (int i = 0; i < len / 2; ++i) {
+    kandydat[len - 1 - i] = kandydat[i];
+}
+```
+
+Dla cyfr `1, 3, 8, 5` otrzymujemy kandydata `1331`.
+
+## Krok 4. Porównanie kandydata z maksimum
+
+Porównujemy cyfry od lewej strony. Dla liczb o tej samej liczbie cyfr pierwsza różna cyfra rozstrzyga, która liczba jest większa.
+
+Jeśli kandydat nie przekracza maksimum, jest wynikiem.
+
+## Krok 5. Zmniejszenie kandydata, jeśli jest za duży
+
+Jeżeli kandydat przekracza maksimum, zmniejszamy środkową cyfrę lub cyfry. Jeśli napotkamy zero, zamieniamy je na 9 i przenosimy zmniejszenie w lewo. Na końcu ponownie odbijamy pierwszą połowę na drugą.
+
+Przykład dla maksimum `1990`:
+
+1. Odbicie cyfr daje `1991`, czyli liczbę za dużą.
+2. Zmniejszamy środkową część.
+3. Po ponownym odbiciu otrzymujemy `1881`.
+
+### Szczególny przypadek: pierwsza cyfra zmieniła się na zero
+
+Dla maksimum `1000` odbicie daje `1001`, czyli za dużo. Zmniejszanie prowadzi do cyfr `0, 9, 9, 0`. Ponieważ liczba zaczyna się od zera, skracamy ją o jedną cyfrę i wypełniamy dziewiątkami:
+
+```text
+0990 -> 999
+```
+
+## Krok 6. Odtworzenie liczby
+
+Gdy cyfry kandydata są już gotowe, składamy z nich liczbę. W każdej iteracji przesuwamy dotychczasowy wynik o jedno miejsce dziesiętne i dodajemy kolejną cyfrę:
+
+```cpp
+wynik = wynik * 10 + kandydat[i];
+```
